@@ -1,0 +1,3 @@
+[submodule "src/urdf"]
+	path = src/urdf
+	url = https://gitlab.com/agh-integra/krocz-ce/the-walking-thread/urdf

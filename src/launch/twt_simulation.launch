@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<launch>
+
+  <!-- these are the arguments you can pass this launch file, for example paused:=true -->
+  <arg name="paused" default="true"/>
+  <arg name="use_sim_time" default="true"/>
+  <arg name="gui" default="true"/>
+  <arg name="debug" default="false"/>
+
+  <arg name="model" default="$(find the_walking_thread_gazebo)/src/urdf/hexapod.urdf.xacro" doc="Robot description file in xacro" />
+  <arg name="props" default="$(find the_walking_thread_gazebo)/src/urdf/config/props/twt_props.yaml" doc="YAML props file location" />
+
+  <!-- Use the logic in empty_world.launch, changing only the name of the world to be launched -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="debug" value="$(arg debug)" />
+    <arg name="gui" value="$(arg gui)" />
+    <arg name="paused" value="$(arg paused)"/>
+    <arg name="use_sim_time" value="$(arg use_sim_time)"/>
+  </include>
+
+  <param name="robot_description" command="$(find xacro)/xacro $(arg model) props_path:=$(arg props) use_package_relative:=True" />
+
+  <!-- Spawn a robot into Gazebo -->
+  <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -model twt -z 1" />
+
+
+
+  <!-- Load joint controller configurations from YAML file to parameter server -->
+  <rosparam file="$(find the_walking_thread_gazebo)/src/urdf/config/control/twt_joint_config.yaml" command="load"/>
+
+  <!-- load the controllers -->
+  <node name="controller_spawner"  pkg="controller_manager"
+    type="spawner" respawn="false" output="screen"
+    ns="/twt" args="joint_state_controller....
+      left_front_base_link_to_coxa_transmition....
+      left_front_coxa_to_femur_transmition....
+      left_front_femur_to_tibia_transmition....
+      left_central_base_link_to_coxa_transmition....
+      left_central_coxa_to_femur_transmition....
+      left_central_femur_to_tibia_transmition....
+      left_rear_base_link_to_coxa_transmition....
+      left_rear_coxa_to_femur_transmition....
+      left_rear_femur_to_tibia_transmition....
+      right_front_base_link_to_coxa_transmition....
+      right_front_coxa_to_femur_transmition....
+      right_front_femur_to_tibia_transmition....
+      right_central_base_link_to_coxa_transmition....
+      right_central_coxa_to_femur_transmition....
+      right_central_femur_to_tibia_transmition....
+      right_rear_base_link_to_coxa_transmition....
+      right_rear_coxa_to_femur_transmition....
+      right_rear_femur_to_tibia_transmition" />
+
+  <!-- convert joint states to TF transforms for rviz, etc -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
+    respawn="false" output="screen">
+    <remap from="/joint_states" to="/twt/joint_states" />
+  </node>
+
+
+
+</launch>

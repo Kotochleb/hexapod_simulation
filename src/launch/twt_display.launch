@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<launch>
+
+  <arg name="model" default="$(find the_walking_thread_gazebo)/src/urdf/hexapod.urdf.xacro" doc="Robot description file in xacro" />
+  <arg name="props" default="$(find the_walking_thread_gazebo)/src/urdf/config/props/twt_props.yaml" doc="YAML props file location" />
+
+  <arg name="gui" default="true" />
+  <arg name="rvizconfig" default="$(find the_walking_thread_gazebo)/src/rviz/twt.rviz" />
+
+  <param name="robot_description" command="$(find xacro)/xacro $(arg model) props_path:=$(arg props) use_package_relative:=True" />
+
+  <node if="$(arg gui)" name="joint_state_publisher" pkg="joint_state_publisher_gui" type="joint_state_publisher_gui" />
+  <node unless="$(arg gui)" name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" />
+
+</launch>
