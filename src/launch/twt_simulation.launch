@@ -21,7 +21,33 @@
   <param name="robot_description" command="$(find xacro)/xacro $(arg model) props_path:=$(arg props) use_package_relative:=True" />
 
   <!-- Spawn a robot into Gazebo -->
-  <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -model twt -z 1" />
+  <node name="spawn_urdf"
+        pkg="gazebo_ros"
+        type="spawn_model"
+        args="-param robot_description -urdf -model twt -z 0.17
+          -J left_front_body_to_coxa_joint 0.00
+          -J left_front_coxa_to_femur_joint 0.00
+          -J left_front_femur_to_tibia_joint 1.57
+
+          -J left_central_body_to_coxa_joint 0.00
+          -J left_central_coxa_to_femur_joint 0.00
+          -J left_central_femur_to_tibia_joint 1.57
+
+          -J left_rear_body_to_coxa_joint 0.00
+          -J left_rear_coxa_to_femur_joint 0.00
+          -J left_rear_femur_to_tibia_joint 1.57
+
+          -J right_front_body_to_coxa_joint 0.00
+          -J right_front_coxa_to_femur_joint 0.00
+          -J right_front_femur_to_tibia_joint 1.57
+
+          -J right_central_body_to_coxa_joint 0.00
+          -J right_central_coxa_to_femur_joint 0.00
+          -J right_central_femur_to_tibia_joint 1.57
+
+          -J right_rear_body_to_coxa_joint 0.00
+          -J right_rear_coxa_to_femur_joint 0.00
+          -J right_rear_femur_to_tibia_joint 1.57" />
 
 
 
@@ -31,25 +57,25 @@
   <!-- load the controllers -->
   <node name="controller_spawner"  pkg="controller_manager"
     type="spawner" respawn="false" output="screen"
-    ns="/twt" args="joint_state_controller....
-      left_front_base_link_to_coxa_transmition....
-      left_front_coxa_to_femur_transmition....
-      left_front_femur_to_tibia_transmition....
-      left_central_base_link_to_coxa_transmition....
-      left_central_coxa_to_femur_transmition....
-      left_central_femur_to_tibia_transmition....
-      left_rear_base_link_to_coxa_transmition....
-      left_rear_coxa_to_femur_transmition....
-      left_rear_femur_to_tibia_transmition....
-      right_front_base_link_to_coxa_transmition....
-      right_front_coxa_to_femur_transmition....
-      right_front_femur_to_tibia_transmition....
-      right_central_base_link_to_coxa_transmition....
-      right_central_coxa_to_femur_transmition....
-      right_central_femur_to_tibia_transmition....
-      right_rear_base_link_to_coxa_transmition....
-      right_rear_coxa_to_femur_transmition....
-      right_rear_femur_to_tibia_transmition" />
+    ns="/twt" args="joint_state_controller
+      left_front_body_to_coxa_controller
+      left_front_coxa_to_femur_controller
+      left_front_femur_to_tibia_controller
+      left_central_body_to_coxa_controller
+      left_central_coxa_to_femur_controller
+      left_central_femur_to_tibia_controller
+      left_rear_body_to_coxa_controller
+      left_rear_coxa_to_femur_controller
+      left_rear_femur_to_tibia_controller
+      right_front_body_to_coxa_controller
+      right_front_coxa_to_femur_controller
+      right_front_femur_to_tibia_controller
+      right_central_body_to_coxa_controller
+      right_central_coxa_to_femur_controller
+      right_central_femur_to_tibia_controller
+      right_rear_body_to_coxa_controller
+      right_rear_coxa_to_femur_controller
+      right_rear_femur_to_tibia_controller" />
 
   <!-- convert joint states to TF transforms for rviz, etc -->
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
